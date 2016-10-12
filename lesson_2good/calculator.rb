@@ -4,28 +4,32 @@
 # perform the operation on the two numbers
 # output the result
 
+require 'yaml'
+MESSAGES = YAML.load_file('calculator_messages.yml')
+
 def prompt(message)
   Kernel.puts("=> #{message}")
 end
 
 def valid_number?(num)
-  num.to_i().nonzero?
+  num.to_i.to_s == num
 end
 
 def operation_to_message(op)
-  case op
-  when '1'
-    'Adding'
-  when '2'
-    'Substracting'
-  when '3'
-    'Multiplying'
-  when '4'
-    'Dividing'
-  end
+  word= case op
+				  when '1'
+				    'Adding'
+				  when '2'
+				    'Substracting'
+				  when '3'
+				    'Multiplying'
+				  when '4'
+				    'Dividing'
+				end
+	word
 end
 
-prompt("Welcome to Calculator! Enter your name")
+prompt(MESSAGES['welcome'])
 
 name = ''
 
@@ -33,50 +37,43 @@ loop do
   name = Kernel.gets().chomp()
 
   if name.empty?()
-    prompt("Make sure to use a valid name")
+    prompt(MESSAGES['valid_name'])
   else
     break
   end
 end
 
-prompt("Hi #{name}")
+prompt(MESSAGES['hello'] + name)
 
 loop do
   number1 = nil
   number2 = nil
 
   loop do
-    prompt("What's your first number?")
+    prompt(MESSAGES['first_number'])
     number1 = Kernel.gets().chomp()
 
     if valid_number?(number1)
       break
     else
-      prompt("Hmm... that doesn't look like a valid number")
+      prompt(MESSAGES['entre_number_error'])
     end
   end
 
   loop do
-    prompt("What's your second number?")
+    prompt(MESSAGES['second_number'])
     number2 = Kernel.gets().chomp()
 
     if valid_number?(number2)
       break
     else
-      prompt("Hmm... that doesn't look like a valid number")
+      prompt(MESSAGES['entre_number_error'])
     end
   end
 
   # ask the user for operation
-  operator_prompt = <<-MSG
-    What operation would you like to perform?
-    1) Add
-    2) Substract
-    3) Multiply
-    4) Divide
-  MSG
 
-  prompt(operator_prompt)
+  prompt(MESSAGES['operator_prompt'])
 	
   operator = ''
   loop do
@@ -89,7 +86,9 @@ loop do
 		end
 	end
 
-	prompt("#{operation_to_message(operator)} the two numbers...")
+	operation_type =operation_to_message(operator)
+
+	prompt(operation_type + MESSAGES['pre_result'])
 
 	result = case operator
 							when '1'
@@ -104,9 +103,9 @@ loop do
 
   prompt("The result for #{operation_to_message(operator).downcase()} is #{result}")
 
-  prompt("Do you want to do another calculation?  (Y/N)")
+  prompt(MESSAGES['next_calculation'])
   answer = Kernel.gets().chomp()
   break unless answer.downcase().start_with?('y')
 end
 
-prompt("Thank you for using the Calculator")
+prompt(MESSAGES['bye'])
