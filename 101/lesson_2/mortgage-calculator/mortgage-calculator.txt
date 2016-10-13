@@ -1,6 +1,6 @@
 Get loan amount
 Get APR
-Get loan duration in years
+Get loan duration in months
 Verify inputs
 Calculate monthly interest rate
 Calculate loan duration

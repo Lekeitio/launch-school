@@ -1,0 +1,29 @@
+# mortgage_calculator_messages.yml
+
+en:
+  welcome: "Welcome to the Mortgage Calculator"
+  name: "What's your name?"
+  valid_name: "It doesn't seem to be a real name, may you input your name?"
+  loan_amount: "Please enter loan amount:"
+  invalid_amount: "Please enter a valid amount"
+  apr_amount: "Please enter APR (in %)"
+  invalid_apr: "Please enter a valid APR"
+  loan_duration: "Please enter load duration in months"
+  invalid_loan_duration: "Please enter a valid loan duration"
+  another_calculation: "Another calculation?"
+  bye: "Thanks for using our Calculator"
+  monthly_payment: "Your monthly payment is: $"
+
+es:
+  welcome: "Bienvenido a la Calculadora de Crédito"
+  name: "¿Cuál es tu nombre"
+  valid_name: "Eso no parece un nombre, ¿puede escribir su nombre?"
+  loan_amount: "Por favor introduzca la cantidad a solicitar:"
+  invalid_amount: "Por favor introduzca una cantidad válida"
+  apr_amount: "Por favor introduzca el APR (en %)"
+  invalid_apr: "Por favor introduzca una cantidad válida para APR"
+  loan_duration: "Por favor introduzca la duración del préstamo en meses"
+  invalid_loan_duration: "Por favor introduzca una duración del préstamo válida"
+  another_calculation: "¿Quiere hacer otro cálculo?"
+  bye: "Gracias por usar nuestra Calculadora"
+  monthly_payment: "El pago mensual es: €"
