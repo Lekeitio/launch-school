@@ -12,7 +12,7 @@ en:
   invalid_loan_duration: "Please enter a valid loan duration"
   another_calculation: "Another calculation?"
   bye: "Thanks for using our Calculator"
-  monthly_payment: "Your monthly payment is: $"
+  monthly_payment: "your monthly payment is: $"
 
 es:
   welcome: "Bienvenido a la Calculadora de Crédito"
@@ -26,4 +26,4 @@ es:
   invalid_loan_duration: "Por favor introduzca una duración del préstamo válida"
   another_calculation: "¿Quiere hacer otro cálculo?"
   bye: "Gracias por usar nuestra Calculadora"
-  monthly_payment: "El pago mensual es: €"
+  monthly_payment: "el pago mensual es: €"

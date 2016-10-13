@@ -11,7 +11,7 @@ end
 
 def prompt(key)
   message = messages(key, LANGUAGE)
-  Kernel.puts("=> #{message}")
+  Kernel.puts("=> #{message}").to_s.chomp()
 end
 
 def integer?(input)
@@ -26,6 +26,20 @@ def valid_number?(input)
   integer?(input) || float?(input)
 end
 
+def get_amount(error)
+  amount = ''
+  loop do
+    amount = Kernel.gets().chomp()
+
+    if valid_number?(amount)
+      break
+    else
+      prompt("#{error}")
+    end
+  end
+  amount
+end
+
 prompt('welcome')
 prompt('name')
 
@@ -34,7 +48,7 @@ name = ''
 loop do
   name = Kernel.gets().chomp()
 
-  if name.empty?()
+  if name.empty?() || name == ' '
     prompt('valid_name')
   else
     break
@@ -44,44 +58,18 @@ end
 loop do
   # Get loan amount
   prompt('loan_amount')
-  loan_amount = ''
-  loop do
-    loan_amount = Kernel.gets().chomp()
-
-    if valid_number?(loan_amount)
-      break
-    else
-      prompt('invalid_amount')
-    end
-  end
+  loan_amount = get_amount('invalid_amount')
 
   # Get APR
   prompt('apr_amount')
-  apr_amount = ''
-  loop do
-    apr_amount = Kernel.gets().chomp()
-
-    if valid_number?(apr_amount)
-      break
-    else
-      prompt('invalid_apr')
-    end
-  end
+  apr_amount = get_amount('invalid_apr')
 
   monthly_interest_rate = apr_amount.to_f / 12 / 100
 
   # Get loan duration
   prompt('loan_duration')
-  loan_duration = ''
-  loop do
-    loan_duration = Kernel.gets().chomp()
+  loan_duration = get_amount('invalid_loan_duration')
 
-    if valid_number?(loan_duration)
-      break
-    else
-      prompt('invalid_loan_duration')
-    end
-  end
   loan_amount = loan_amount.to_f()
   monthly_interest_rate = monthly_interest_rate.to_f()
   loan_duration = loan_duration.to_i()
@@ -92,8 +80,7 @@ loop do
 
   final_monthly_payment = format('%02.2f', monthly_payment)
 
-  prompt('monthly_payment')
-  puts final_monthly_payment
+  puts "#{name.capitalize}, #{messages('monthly_payment', LANGUAGE)}#{final_monthly_payment}"
 
   prompt('another_calculation')
   answer = Kernel.gets().chomp()
