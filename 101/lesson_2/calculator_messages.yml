@@ -1,0 +1,35 @@
+# calculator_messages.yml
+
+en:
+  welcome: "Welcome to Calculator! Enter your name"
+  valid_name: "Make sure to use a valid name"
+  hello: "Hi "
+  first_number: "What's your first number?"
+  entre_number_error: "Hmm... that doesn't look like a valid number"
+  second_number: "What's your second number?"
+  operator_prompt: "
+      What operation would you like to perform?
+      1) Add
+      2) Substract
+      3) Multiply
+      4) Divide"
+  pre_result: " the two numbers..."
+  next_calculation: "Do you want to do another calculation?  (Y/N)"
+  bye: "Thank you for using the Calculator"
+
+es:
+    welcome: "Bienvenido a Calculadora! Escribe tu nombre"
+    valid_name: "Asegúrate de introducir un nombre válido"
+    hello: "Hola "
+    first_number: "Cuál es tu primer número?"
+    entre_number_error: "Hmm... eso no parece un número"
+    second_number: "Cuál es tu segundo número?"
+    operator_prompt: "
+        Qué operción quieres realizar?
+        1) Sumar
+        2) Restar
+        3) Multiplicar
+        4) Dividir"
+    pre_result: " los dos números..."
+    next_calculation: "Quieres hacer otra operación?  (Y/N)"
+    bye: "Gracias por usar la calculadora"

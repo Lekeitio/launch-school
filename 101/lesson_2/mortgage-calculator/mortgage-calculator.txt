@@ -1,0 +1,7 @@
+Get loan amount
+Get APR
+Get loan duration in years
+Verify inputs
+Calculate monthly interest rate
+Calculate loan duration
+Put monthly payment

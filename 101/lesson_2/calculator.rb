@@ -7,7 +7,14 @@
 require 'yaml'
 MESSAGES = YAML.load_file('calculator_messages.yml')
 
-def prompt(message)
+LANGUAGE = 'es'
+
+def messages(message, lang)
+  MESSAGES[lang][message]
+end
+
+def prompt(key)
+	message = messages(key, LANGUAGE)
   Kernel.puts("=> #{message}")
 end
 
@@ -29,7 +36,7 @@ def operation_to_message(op)
 	word
 end
 
-prompt(MESSAGES['welcome'])
+prompt('welcome')
 
 name = ''
 
@@ -37,43 +44,43 @@ loop do
   name = Kernel.gets().chomp()
 
   if name.empty?()
-    prompt(MESSAGES['valid_name'])
+    prompt('valid_name')
   else
     break
   end
 end
 
-prompt(MESSAGES['hello'] + name)
+prompt('hello')
 
 loop do
   number1 = nil
   number2 = nil
 
   loop do
-    prompt(MESSAGES['first_number'])
+    prompt('first_number')
     number1 = Kernel.gets().chomp()
 
     if valid_number?(number1)
       break
     else
-      prompt(MESSAGES['entre_number_error'])
+      prompt('entre_number_error')
     end
   end
 
   loop do
-    prompt(MESSAGES['second_number'])
+    prompt('second_number')
     number2 = Kernel.gets().chomp()
 
     if valid_number?(number2)
       break
     else
-      prompt(MESSAGES['entre_number_error'])
+      prompt('entre_number_error')
     end
   end
 
   # ask the user for operation
 
-  prompt(MESSAGES['operator_prompt'])
+  prompt('operator_prompt')
 	
   operator = ''
   loop do
@@ -88,7 +95,7 @@ loop do
 
 	operation_type =operation_to_message(operator)
 
-	prompt(operation_type + MESSAGES['pre_result'])
+	prompt('pre_result')
 
 	result = case operator
 							when '1'
@@ -103,9 +110,9 @@ loop do
 
   prompt("The result for #{operation_to_message(operator).downcase()} is #{result}")
 
-  prompt(MESSAGES['next_calculation'])
+  prompt('next_calculation')
   answer = Kernel.gets().chomp()
   break unless answer.downcase().start_with?('y')
 end
 
-prompt(MESSAGES['bye'])
+prompt('bye')
