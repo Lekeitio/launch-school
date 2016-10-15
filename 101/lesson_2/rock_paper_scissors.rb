@@ -1,15 +1,18 @@
 # rock_paper_scissors.rb
-VALID_CHOICES = ['rock', 'paper', 'scissors']
+# VALID_CHOICES = ['rock', 'paper', 'scissors']
+VALID_CHOICES = %w(rock paper scissors)
+
+def win?(first, second)
+  (first == 'rock' && second == 'scissors') ||
+    (first == 'paper' && second == 'rock') ||
+    (first == 'scissors' && second == 'paper')
+end
 
 def display_result(choice, computer_choice)
-  if (choice == 'rock' && computer_choice == 'scissors') ||
-     (choice == 'paper' && computer_choice == 'rock') ||
-     (choice == 'scissors' && computer_choice == 'paper')
+  if win?(choice, computer_choice)
     # prompt("You won!")
     return "You won!"
-  elsif (choice == 'rock' && computer_choice == 'paper') ||
-        (choice == 'paper' && computer_choice == 'scissors') ||
-        (choice == 'scissors' && computer_choice == 'rock')
+  elsif win?(computer_choice, choice)
     # prompt("Computer won!")
     return "Computer won"
   else
