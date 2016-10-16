@@ -1,6 +1,14 @@
 # rps_bonus.rb
 VALID_CHOICES = %w(rock paper scissors lizard spock)
 
+WINNING_MATRIX = {
+  'rock' => %w(scissors lizard),
+  'paper' => %w(rock spock),
+  'scissors' => %w(paper lizard),
+  'lizard' => %w(paper spock),
+  'spock' => %w(scissors rock)
+}
+
 def replace_choice(choice)
   case choice
   when 'r', 'rock' then 'rock'
@@ -12,20 +20,15 @@ def replace_choice(choice)
 end
 
 def win?(first, second)
-  (first == 'rock' && second == 'scissors') ||
-    (first == 'rock' && second == 'lizard') ||
-    (first == 'paper' && second == 'rock') ||
-    (first == 'paper' && second == 'spock') ||
-    (first == 'scissors' && second == 'paper') ||
-    (first == 'scissors' && second == 'lizard') ||
-    (first == 'lizard' && second == 'paper') ||
-    (first == 'lizard' && second == 'spock') ||
-    (first == 'spock' && second == 'scissors') ||
-    (first == 'spock' && second == 'rock')
+  WINNING_MATRIX[first].include?(second)
 end
 
 def prompt(message)
   Kernel.puts("=> #{message}")
+end
+
+def clear_screen
+  puts "\e[H\e[2J"
 end
 
 def display_result(human, computer)
@@ -51,6 +54,7 @@ def display_current_score(sc_hu, sc_co)
 end
 
 def display_end_game(sc_hu, sc_co)
+  clear_screen()
   display_stars()
   prompt("Final score is Human #{sc_hu} and Computer #{sc_co}")
   if sc_hu > sc_co
@@ -79,6 +83,8 @@ reduce_choice = <<-MSG
 
 score_human = 0
 score_computer = 0
+
+clear_screen()
 
 loop do
   human_choice = ''
@@ -113,6 +119,7 @@ loop do
   prompt("Do you want to play again?")
   answer = Kernel.gets().chomp()
   break unless answer.downcase().start_with?('y')
+  clear_screen
 end
 
 display_end_game(score_human, score_computer)
