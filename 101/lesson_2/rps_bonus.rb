@@ -41,23 +41,19 @@ def display_result(human, computer)
   end
 end
 
-def end_game?(sc_hu, sc_co)
-  if sc_hu >= 5
-    true
-  elsif sc_co >= 5
-    true
-  end
+def end_game?(score_human, score_computer)
+  score_human >= 5 || score_computer >= 5
 end
 
-def display_current_score(sc_hu, sc_co)
-  prompt("Human score is; #{sc_hu}, Computer score is: #{sc_co}")
+def display_current_score(score_human, score_computer)
+  prompt("Human score is; #{score_human}, Computer score is: #{score_computer}")
 end
 
-def display_end_game(sc_hu, sc_co)
+def display_end_game(score_human, score_computer)
   clear_screen()
   display_stars()
-  prompt("Final score is Human #{sc_hu} and Computer #{sc_co}")
-  if sc_hu > sc_co
+  prompt("Final score is Human #{score_human} and Computer #{score_computer}")
+  if score_human > score_computer
     prompt("Human won to Computer")
   else
     prompt("Computer won to Human")
@@ -72,7 +68,7 @@ def display_stars
   prompt("")
 end
 
-reduce_choice = <<-MSG
+choice_string = <<-MSG
   Please use :
   r => rock
   p => paper
@@ -90,15 +86,12 @@ loop do
   human_choice = ''
   loop do
     prompt("Choose one: #{VALID_CHOICES.join(', ')}")
-    prompt(reduce_choice)
+    prompt(choice_string)
     choice = Kernel.gets().chomp()
     human_choice = replace_choice(choice)
 
-    if VALID_CHOICES.include?(human_choice)
-      break
-    else
-      prompt("That's not a valid choice.")
-    end
+    break if VALID_CHOICES.include?(human_choice)
+    prompt("That's not a valid choice.")
   end
 
   computer_choice = VALID_CHOICES.sample()
