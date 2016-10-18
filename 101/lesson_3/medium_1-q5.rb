@@ -26,6 +26,8 @@ number = gets.chomp.to_i
 p factors(number)
 =end
 
+#q7
+
 limit = 30
 
 def fib(first_num, second_num, limit)
