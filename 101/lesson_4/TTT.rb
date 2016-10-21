@@ -1,6 +1,7 @@
-# tictactoe.rb
+# TTT.rb
 require 'pry'
 
+START_PLAYER = 'Choose'.freeze
 INITIAL_MARKER = ' '.freeze
 PLAYER_MARKER = 'X'.freeze
 COMPUTER_MARKER = 'O'.freeze
@@ -59,8 +60,42 @@ def player_places_piece!(brd)
 end
 
 def computer_places_piece!(brd)
-  square = empty_squares(brd).sample
+  square = nil
+
+  if computer_offense(brd)
+    square = computer_offense(brd)
+  else
+    square = computer_defense(brd)
+  end
+
+  if !square && brd[5] == ' '
+    return brd[5] = COMPUTER_MARKER
+  end
+
+  # pick ramdon square
+  if !square
+    square = empty_squares(brd).sample
+  end
+
   brd[square] = COMPUTER_MARKER
+end
+
+def computer_defense(brd)
+  square = nil
+  WINNING_LINES.each do |line|
+    square = find_at_risk_square(line, brd, PLAYER_MARKER)
+    break if square
+  end
+  square
+end
+
+def computer_offense(brd)
+  square = nil
+  WINNING_LINES.each do |line|
+    square = find_at_risk_square(line, brd, COMPUTER_MARKER)
+    break if square
+  end
+  square
 end
 
 def board_full?(brd)
@@ -87,26 +122,89 @@ def joinor(arr, delimiter=', ', word='or')
   arr.size == 2 ? arr.join(' ') : arr.join(delimiter)
 end
 
+def end_game?(score_human, score_computer)
+  score_human >= 5 || score_computer >= 5
+end
+
+def find_at_risk_square(line, board, marker)
+  if board.values_at(*line).count(marker) == 2
+    board.select { |k, v| line.include?(k) && v == INITIAL_MARKER }.keys.first
+  else
+    nil
+  end
+end
+
+def play_player(brd)
+  display_board(brd)
+  player_places_piece!(brd)
+  return true if someone_won?(brd) || board_full?(brd)
+end
+
+def play_computer(brd)
+  computer_places_piece!(brd)
+  display_board(brd)
+  return true if someone_won?(brd) || board_full?(brd)
+end
+
+def choose_init_player
+  system 'clear'
+  prompt 'Who starts Human (h) or Computer (c)'
+  while selection = gets.chomp
+    break if selection.downcase.start_with?('h', 'c')
+    prompt 'Enter Human (h) or Computer (c)'
+  end
+  if selection == 'h'
+    return 'Player'
+  else
+    return 'Computer'
+  end
+end
+
+def play_game(plr, brd)
+  if plr == 'Player'
+    return true if play_player(brd)
+    return true if play_computer(brd)
+  else
+    return true if play_computer(brd)
+    return true if play_player(brd)
+  end
+end
+
+def alternate_player(current_player)
+  if current_player == 'Player'
+    return 'Computer'
+  else
+    return 'Player'
+  end
+end
+
+score_human = 0
+score_computer = 0
+initial_player = START_PLAYER
+initial_player = choose_init_player if START_PLAYER == 'Choose'
+
 loop do
   board = initialize_board
 
   loop do
-    display_board(board)
-    player_places_piece!(board)
-    break if someone_won?(board) || board_full?(board)
-    computer_places_piece!(board)
-    display_board(board)
-    break if someone_won?(board) || board_full?(board)
+    break if play_game(initial_player, board)
   end
 
   display_board(board)
 
   if someone_won?(board)
     prompt "#{detect_winner(board)} won!"
+    if detect_winner(board) == "Player"
+      score_human += 1
+    elsif detect_winner(board) == "Computer"
+      score_computer += 1
+    end
   else
     prompt "It's a tie!"
   end
 
+  prompt "Total result Human: #{score_human} | Computer: #{score_computer}"
+  break if end_game?(score_human, score_computer)
   prompt "Play again (y/n)"
   answer = gets.chomp
   break unless answer.downcase.start_with?('y')
