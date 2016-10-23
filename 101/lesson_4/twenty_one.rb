@@ -1,44 +1,34 @@
 # twenty_one.rb
-require 'pry'
 
-=begin
-  1. Initialize Deck
-  2. Deal cards to player and dealer
-  3. Player turn: hit or stay
-    - repeat unitl bust or stay
-  4. If player bust, dealer wins
-  5. Dealer turn: hit or stay
-    - repeat until total >= 17
-  6. If dealer bust, player wins
-  7. Compare cards and declare winner
-=end
-
-# initial values
-DECK_VALUES = %w(1 2 3 4 5 6 7 8 9 J Q K A).freeze
-DECK_SUITES = %w(h c s d).freeze
+# initial value
+DECK_VALUES = %w(2 3 4 5 6 7 8 9 10 J Q K A).freeze
+DECK_SUITES = %w(♥ ♣ ♠ ♦).freeze
 DECK = DECK_VALUES.product(DECK_SUITES)
 NUMBER_DECKS = 1
-CARD_SHOW = 0
+CARD_HIDE = 0
+WINNIG_POINTS = 2
+GAME_POINTS = 21
+DEALER_MAX = 17
 
-def shuffle_deck!
+def shuffle_deck
   deck = []
-  (1..NUMBER_DECKS).each do
+  NUMBER_DECKS.times do
     deck = deck.concat(DECK)
   end
   deck = deck.shuffle
 end
 
-def show_play_table(p_hand, d_hand)
-  p_c = show_cards_table(p_hand, 'Player')
-  d_c = show_cards_table(d_hand, 'Dealer')
+def show_play_table(player_hand, dealer_hand)
+  player = show_cards_table(player_hand, 'Player')
+  dealer = show_cards_table(dealer_hand, 'Dealer')
   clear_screen
   puts " "
-  puts "Dealer Hand: #{d_c}"
+  puts "Dealer Hand: #{dealer}"
   puts " "
   puts "----------------------------"
   puts " "
-  puts "Player Hand: #{p_c}"
-  puts "Player Hand Value: #{hand_value(p_hand)}"
+  puts "Player Hand: #{player}"
+  puts "Player Hand Value: #{hand_value(player_hand)}"
   puts " "
 end
 
@@ -47,17 +37,16 @@ def clear_screen
   system 'cls'
 end
 
-def show_cards_table(hand, plyr = ' ')
+def show_cards_table(hand, player = ' ')
   hand_cards = []
-  player = plyr
   hand.each_with_index do |v, i|
-    player == 'Dealer' && i == CARD_SHOW ? hand_value = 'X' : hand_value = v[0]
+    player == 'Dealer' && i == CARD_HIDE ? hand_value = 'X' : hand_value = v[0]
     hand_cards << hand_value
   end
   hand_cards.join(' ')
 end
 
-def card_value?(crd)
+def card_value(crd)
   card = crd[0]
 
   if card == 'J' ||
@@ -72,30 +61,30 @@ def card_value?(crd)
   end
 end
 
-def hand_value(hndv)
+def hand_value(hand_value)
   sum = 0
-  hndv.each do |v|
+  hand_value.each do |v|
     sum += v[1]
     if v[0][0] == 'A'
-      sum -= 10 if sum > 21
+      sum -= 10 if sum > GAME_POINTS
     end
   end
   sum
 end
 
-def initial_deal!(shd)
+def initial_deal!(shuffled_deck)
   hand = []
   2.times do
-    dealed_car = deal_card!(shd)
-    hand << [dealed_car, card_value?(dealed_car)]
+    dealed_card = deal_card!(shuffled_deck)
+    hand << [dealed_card, card_value(dealed_card)]
   end
   hand
 end
 
-def play_deal!(shd)
+def play_deal!(shuffled_deck)
   hand = []
-  dealed_car = deal_card!(shd)
-  hand.concat([dealed_car, card_value?(dealed_car)])
+  dealed_card = deal_card!(shuffled_deck)
+  hand.concat([dealed_card, card_value(dealed_card)])
 end
 
 def deal_card!(deck)
@@ -103,7 +92,7 @@ def deal_card!(deck)
 end
 
 def busted?(hand)
-  true if hand_value(hand) > 21
+  true if hand_value(hand) > GAME_POINTS
 end
 
 def show_end_mssg(player_hand, dealer_hand)
@@ -113,9 +102,20 @@ def show_end_mssg(player_hand, dealer_hand)
        " count is #{hand_value(dealer_hand)}"
 end
 
+def hit_stay?(answer)
+  case answer
+  when 'stay' then 's'
+  when 'hit' then 'h'
+  end
+  answer
+end
+
 # game
+player_points = 0
+dealer_points = 0
+
 loop do
-  shuffled_deck = shuffle_deck!
+  shuffled_deck = shuffle_deck
   player_hand = []
   dealer_hand = []
 
@@ -125,43 +125,62 @@ loop do
   show_play_table(player_hand, dealer_hand)
 
   loop do
-    puts "(h)it or (s)tay?"
-    answer = gets.chomp.downcase
+    answer = ''
+    loop do
+      puts "(h)it or (s)tay?"
+      answer = gets.chomp.downcase
+      break if ['h', 's'].include?(hit_stay?(answer))
+      puts "Select correct action, please"
+    end
     break if answer == 's' || busted?(player_hand)
     player_hand << play_deal!(shuffled_deck)
     break if busted?(player_hand)
     show_play_table(player_hand, dealer_hand)
   end
+
   show_play_table(player_hand, dealer_hand)
+
   if busted?(player_hand)
     puts "So, sorry...."
   else
     puts "You chose to stay"
   end
 
-  loop do # dealer playing
-    break if busted?(player_hand) || hand_value(dealer_hand) >= 17
+  # dealer playing
+  loop do
+    break if busted?(player_hand) || hand_value(dealer_hand) >= DEALER_MAX
+    puts "Dealer playing..."
     dealer_hand << play_deal!(shuffled_deck)
     break if busted?(dealer_hand)
     show_play_table(player_hand, dealer_hand)
   end
 
+  hand_value_player = hand_value(player_hand)
   # who won?
-  if ((hand_value(player_hand) <= 21) &&
-     (hand_value(player_hand) > hand_value(dealer_hand))) ||
+  if ((hand_value_player <= GAME_POINTS) &&
+     (hand_value_player > hand_value(dealer_hand))) ||
      busted?(dealer_hand)
     puts "Player wins"
+    player_points += 1
     show_end_mssg(player_hand, dealer_hand)
-  elsif hand_value(dealer_hand) <= 21
+  elsif hand_value(dealer_hand) <= GAME_POINTS
     puts "Casino wins"
+    dealer_points += 1
     show_end_mssg(player_hand, dealer_hand)
   end
 
+  puts "Total Score => Player: #{player_points} Dealer: #{dealer_points}"
+  break if player_points == WINNIG_POINTS || dealer_points == WINNIG_POINTS
+
   # new game?
   puts "Do you want to play again (y/n)"
-  answer = gets.chomp
-  break unless answer.downcase.start_with?('y')
+  answer = ''
+  loop do
+    answer = gets.chomp.downcase
+    break if ['y', 'n'].include?(answer)
+    puts "Select correct action, please"
+  end
+  break if answer == 'n'
 end
 
-clear_screen
 puts "Thanks for playing Twenty One. Good Bye!"
