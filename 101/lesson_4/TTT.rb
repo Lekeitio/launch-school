@@ -2,6 +2,7 @@
 require 'pry'
 
 START_PLAYER = 'Choose'.freeze
+PLAY_LONG = 3
 INITIAL_MARKER = ' '.freeze
 PLAYER_MARKER = 'X'.freeze
 COMPUTER_MARKER = 'O'.freeze
@@ -60,13 +61,11 @@ def player_places_piece!(brd)
 end
 
 def computer_places_piece!(brd)
-  square = nil
-
-  if computer_offense(brd)
-    square = computer_offense(brd)
-  else
-    square = computer_defense(brd)
-  end
+  square = if computer_offense(brd)
+             computer_offense(brd)
+           else
+             computer_defense(brd)
+           end
 
   if !square && brd[5] == ' '
     return brd[5] = COMPUTER_MARKER
@@ -123,14 +122,12 @@ def joinor(arr, delimiter=', ', word='or')
 end
 
 def end_game?(score_human, score_computer)
-  score_human >= 5 || score_computer >= 5
+  score_human >= PLAY_LONG || score_computer >= PLAY_LONG
 end
 
 def find_at_risk_square(line, board, marker)
   if board.values_at(*line).count(marker) == 2
     board.select { |k, v| line.include?(k) && v == INITIAL_MARKER }.keys.first
-  else
-    nil
   end
 end
 
@@ -148,8 +145,10 @@ end
 
 def choose_init_player
   system 'clear'
+  selection = ''
   prompt 'Who starts Human (h) or Computer (c)'
-  while selection = gets.chomp
+  loop do
+    selection = gets.chomp
     break if selection.downcase.start_with?('h', 'c')
     prompt 'Enter Human (h) or Computer (c)'
   end
@@ -162,11 +161,9 @@ end
 
 def play_game(plr, brd)
   if plr == 'Player'
-    return true if play_player(brd)
-    return true if play_computer(brd)
+    true if play_player(brd) || play_computer(brd)
   else
-    return true if play_computer(brd)
-    return true if play_player(brd)
+    true if play_computer(brd) || play_player(brd)
   end
 end
 
