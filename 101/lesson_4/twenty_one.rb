@@ -6,16 +6,16 @@ DECK_SUITES = %w(♥ ♣ ♠ ♦).freeze
 DECK = DECK_VALUES.product(DECK_SUITES)
 NUMBER_DECKS = 1
 CARD_HIDE = 0
-WINNIG_POINTS = 2
+WINNIG_POINTS = 3
 GAME_POINTS = 21
 DEALER_MAX = 17
 
 def shuffle_deck
   deck = []
   NUMBER_DECKS.times do
-    deck = deck.concat(DECK)
+    deck.concat(DECK)
   end
-  deck = deck.shuffle
+  deck.shuffle
 end
 
 def show_play_table(player_hand, dealer_hand)
@@ -39,8 +39,8 @@ end
 
 def show_cards_table(hand, player = ' ')
   hand_cards = []
-  hand.each_with_index do |v, i|
-    player == 'Dealer' && i == CARD_HIDE ? hand_value = 'X' : hand_value = v[0]
+  hand.each_with_index do |value, index|
+    player == 'Dealer' && index == CARD_HIDE ? hand_value = 'X' : hand_value = value[0]
     hand_cards << hand_value
   end
   hand_cards.join(' ')
@@ -51,8 +51,7 @@ def card_value(crd)
 
   if card == 'J' ||
      card == 'Q' ||
-     card == 'K' ||
-     card == '1'
+     card == 'K' 
     10
   elsif card == 'A'
     11
@@ -63,9 +62,9 @@ end
 
 def hand_value(hand_value)
   sum = 0
-  hand_value.each do |v|
-    sum += v[1]
-    if v[0][0] == 'A'
+  hand_value.each do |value|
+    sum += value[1]
+    if value[0][0] == 'A'
       sum -= 10 if sum > GAME_POINTS
     end
   end
@@ -92,7 +91,7 @@ def deal_card!(deck)
 end
 
 def busted?(hand)
-  true if hand_value(hand) > GAME_POINTS
+  hand_value(hand) > GAME_POINTS
 end
 
 def show_end_mssg(player_hand, dealer_hand)
@@ -104,8 +103,8 @@ end
 
 def hit_stay?(answer)
   case answer
-  when 'stay' then 's'
-  when 'hit' then 'h'
+  when 'stay' then answer = 's'
+  when 'hit' then answer = 'h'
   end
   answer
 end
